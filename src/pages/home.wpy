@@ -1,0 +1,360 @@
+<style lang="less">
+
+  .clearfix:after {
+    content: "020";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+
+  .clearfix {
+    zoom: 1;
+  }
+
+  .menu {
+    height: 90px;
+    position: relative;
+  }
+
+  .scancode, .order {
+    padding: 5px;
+    text-align: left;
+    height: 72px;
+    position: absolute;
+    top: 50%;
+    margin-top: -35px;
+    width: 44%;
+  }
+
+  .scancode {
+    margin-left: 5px;
+    border-radius: 5px;
+    left: 0;
+    background-color: #3DBEEE;
+  }
+
+  .scancode-icon, .order-icon {
+    height: 28px;
+    width: 88px;
+    background-color: #a3f9df;
+    display: block;
+    position: absolute;
+    top: 50%;
+    margin-top: -14px;
+    left: 50%;
+    margin-left: -44px;
+  }
+
+  .order {
+    margin-right: 5px;
+    border-radius: 5px;
+    color: white;
+    font-size: 8px;
+    background-color: #FBA428;
+    right: 0;
+  }
+
+  .order-car {
+    font-size: 10px;
+    right: 5px;
+    bottom: 5px;
+    position: absolute;
+  }
+
+  .meal-show {
+    width: 31%;
+    display: inline-block;
+    padding: 4px;
+  }
+
+  .meal-show-img {
+    background-color: #ffe7e0;
+    width: 100%;
+    height: 110px;
+    display: block
+  }
+
+  .meal-show-name {
+    font-size: 14px;
+    color: #333333;
+    width: 100%;
+    text-align: center;
+    margin-top: 5px
+  }
+
+  .meal-show-group {
+    margin-top: 10px;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .modal-box {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    background: rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+  }
+
+  .modal-body {
+    position: relative;
+  }
+
+  .modal-content {
+    background-color: white;
+    margin: 30% auto;
+    width: 80%;
+    padding: 5px;
+    overflow: hidden;
+  }
+
+  .left-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    width: 7px;
+    height: 20px;
+    /*background: linear-gradient(#fde6f8, red);*/
+  }
+
+  .tag-text {
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    color: #333333;
+    margin-left: 16px;
+    line-height: 20px
+  }
+
+  .train-pic {
+    width: 100%;
+    background-color: gold;
+    height: 150px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+
+  .item-news {
+    margin: 10px 5px;
+    color: #666666;
+  }
+
+  .item-news-img {
+    height: 120px;
+    width: 100%;
+    background-color: #d1fdff;
+    border-radius: 5px;
+  }
+
+  .banner {
+    height: 100px;
+    margin: 30px 5px 0;
+    position: relative
+  }
+
+  .banner .dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 13px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .banner .dots .dot {
+    margin: 0 8px;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.49);
+    border-radius: 8px;
+    transition: all .6s;
+  }
+
+  .banner .dots .dot.active {
+    width: 15px;
+    background: #f80;
+  }
+
+  .in-bottom {
+    margin-left: -40px;
+    left: 50%;
+    height: 100px;
+    width: 80px;
+    justify-content: center;
+    display: flex;
+    position: fixed;
+    text-align: left;
+    bottom: -10px;
+    _position: absolute;
+  }
+</style>
+<template>
+
+  <view class="menu clearfix">
+    <view class="scancode" @tap="sacnCode()">
+      <image class="scancode-icon"></image>
+    </view>
+    <view class="order"> 绑定车票，旅途下单享美食
+      <image class="order-icon" @tap="orderClick()"></image>
+      <view class="order-car"> 当前车次：K1453
+      </view>
+    </view>
+  </view>
+  <view style="margin-left: 8px;margin-top: 20px;height: 20px;position: relative">
+    <image class="left-icon" src="../images/left_icon.png"></image>
+    <view class="tag-text">热门菜品</view>
+  </view>
+  <scroll-view scroll-x="true" class="meal-show-group">
+    <repeat for="{{showMeals}}"
+            key="index">
+      <view class="meal-show" @tap="itemClick({{index}})">
+        <image class="meal-show-img"></image>
+        <view class="meal-show-name"> {{item.name}}</view>
+        <view style="font-size: 14px;color: red; width: 100%;text-align: left;font-family: 'PingFang SC'">
+          ${{item.price}}
+          <image src="../images/add_meal.png"
+                 style="width: 18px;height:18px;float: right;margin-right: 5px"></image>
+        </view>
+      </view>
+    </repeat>
+  </scroll-view>
+
+  <View
+    style="font-size: 12px;color: #999999;float: right;padding-right: 12px;line-height: 12px;margin-top: 10px;position: relative;margin-right: 5px">
+    更多美食
+    <image src="../images/right_arrow.png"
+           style="width: 10px;height:10px;position: absolute;right:0;top: 50%;margin-top: -5px"></image>
+  </View>
+
+
+  <view class="banner">
+    <swiper autoplay="auto" interval="5000" current="{{swiperCurrent}}" duration="1000"
+            @change="swiperChange">
+      <repeat for="{{imgUrls}}">
+        <swiper-item>
+          <image src="{{item}}" style="height: 92px;width: 100%"/>
+        </swiper-item>
+      </repeat>
+    </swiper>
+
+    <view class="dots">
+      <repeat for="{{imgUrls}}">
+        <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+      </repeat>
+    </view>
+  </view>
+
+  <view style="margin-left: 8px;margin-top: 15px;height: 20px;position: relative;">
+    <image class="left-icon" src="../images/left_icon.png"></image>
+    <view class="tag-text">旅途推荐</view>
+  </view>
+
+
+  <repeat for="{{showMeals}}" key="index" style="margin: 5px">
+    <view class="item-news">
+      <image class="item-news-img"></image>
+      <view style="font-size: 14px;">标题标题</view>
+      <view style="font-size: 13px;">内容内容内容内容内容内容内容内容内容</view>
+    </view>
+  </repeat>
+  <view class="in-bottom" style="flex-direction: column;" @tap="orderList">
+    <image src="../images/order_list.png" class="in-bottom"
+           style="">
+    </image>
+    <view class="in-bottom"
+          style="z-index: 1;font-size: 13px;color: #666666;height: 32px">
+      订单
+    </view>
+  </view>
+
+  <view class="modal-box" hidden="{{flag}}">
+    <view class="modal-body">
+      <view class="modal-content">
+        <image src="" class="train-pic"></image>
+        <view style="margin: 5px;color: #333333;font-size: 14px">请核对片面，输入您本次车票信息！</view>
+        <view style=" display: flex;flex-direction: row;margin: 5px">
+          <view style="flex: 1;text-align: left">车次:</view>
+          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 2"></input>
+          <input v-model="input" style="margin-left:10px;border-bottom: #333333 solid 1px;flex: 3"></input>
+        </view>
+        <view style=" display: flex;flex-direction: row;margin: 5px">
+          <view style="flex: 1;text-align: left">车厢:</view>
+          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 1"></input>
+          <view style="flex: 1">排数:</view>
+          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 1"></input>
+          <view style="flex: 1">座号:</view>
+          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 1"></input>
+        </view>
+
+        <view
+          style="line-height:35px;height: 35px;color: white;background-color: #f82c19;margin-left: 20px;margin-right:20px;margin-top:20px;text-align: center;font-size: 15px;border-radius: 5px;"
+          @tap="hide()">我知道了
+        </view>
+        <view style="margin:5px;float: right;font-size: 10px;color: #999999;">温馨提示: 仅支持G D C开头的列车</view>
+
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: 'home'
+    };
+    components = {};
+    data = {
+      swiperCurrent: 0,
+      imgUrls: [
+        'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
+        'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
+        'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
+      ],
+      flag: true,
+      showMeals: [{ name: '猪排', price: 25.00 }, { name: '鸡排', price: 15.00 }, { name: '牛排', price: 35.00 }, {
+        name: '鸡腿',
+        price: 5.00
+      }]
+    };
+    methods = {
+      orderList() {
+        console.log('订单列表');
+      },
+      swiperChange(e) {
+        this.swiperCurrent = e.detail.current;
+      },
+      itemClick(index) {
+        console.log(index);
+      },
+      orderClick() {
+        this.flag = false;
+      },
+      hide() {
+        this.flag = true;
+      },
+      sacnCode() {
+        wx.scanCode({
+          success: (res) => {
+            console.log(res);
+            if (res.result) {
+              wx.redirectTo({
+                url: `./PageH5?url=${res.result}`
+              });
+            }
+            ;
+          }
+        });
+      }
+    };
+
+    onLoad() {
+    }
+  }
+</script>

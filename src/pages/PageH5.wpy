@@ -1,0 +1,33 @@
+<style lang="less">
+
+
+</style>
+<template>
+  <view class="container">
+    <view class="pageH5">
+      <web-view src="{{src}}"></web-view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: 'home'
+    };
+    components = {};
+    data = {
+      src: 'https://www.baidu.com/'
+    };
+
+    methods = {
+    };
+    events = {};
+
+    onLoad(options) {
+      console.log(options.url);
+      this.src = options.url;
+    }
+  }
+</script>
