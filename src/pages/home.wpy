@@ -108,6 +108,7 @@
     width: 80%;
     padding: 5px;
     overflow: hidden;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1), 0 2px 20px 0 rgba(0, 0, 0, 0.1);
   }
 
   .left-icon {
@@ -130,7 +131,6 @@
 
   .train-pic {
     width: 100%;
-    background-color: gold;
     height: 150px;
   }
 
@@ -276,27 +276,90 @@
   <view class="modal-box" hidden="{{flag}}">
     <view class="modal-body">
       <view class="modal-content">
-        <image src="" class="train-pic"></image>
-        <view style="margin: 5px;color: #333333;font-size: 14px">请核对片面，输入您本次车票信息！</view>
-        <view style=" display: flex;flex-direction: row;margin: 5px">
-          <view style="flex: 1;text-align: left">车次:</view>
-          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 2"></input>
-          <input v-model="input" style="margin-left:10px;border-bottom: #333333 solid 1px;flex: 3"></input>
+        <image src="../images/ticket_pic.png" class="train-pic"></image>
+        <view style="margin: 5px;color: #333333;font-size: 14px">请核对片面，输入
+          <span style="color: red">您本次</span>
+          车票信息！
+        </view>
+        <view style=" display: flex;flex-direction: row;margin: 5px;height: 25px">
+          <view style="flex: 0.8;text-align: left;">车次:</view>
+          <view
+            @tap="selectTrain()"
+            style="border-bottom: #666666 solid 1px;flex: 1;position: relative;text-align: center">
+            {{selectTrainText}}
+            <view hidden="{{isSelectTrain}}"
+                  style="width: 100%;position: absolute;bottom:-95px;background-color: white;z-index: 22 ">
+              <repeat for="{{trainTypes}}" key="index">
+                <view style="height: 28px;text-align: center"
+                      @tap="selectTrainText({{item}})">
+                  {{item}}
+                </view>
+              </repeat>
+            </view>
+          </view>
+          <input v-model="input" style="margin-left:10px;border-bottom: #666666 solid 1px;flex: 3"></input>
         </view>
         <view style=" display: flex;flex-direction: row;margin: 5px">
-          <view style="flex: 1;text-align: left">车厢:</view>
-          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 1"></input>
+          <view style="flex: 1">车厢:</view>
+          <view
+            @tap="selectCarNum()"
+            style="border-bottom: #666666 solid 1px;flex: 1;position: relative;text-align: center">
+            {{selectCarText}}
+            <view hidden="{{isSelectCar}}"
+                  style="width: 100%;position: absolute;bottom:-95px;background-color: white;z-index: 22;height: 90px ">
+              <scroll-view scroll-y="true">
+                <repeat for="{{cars}}" key="index">
+                  <view style="height: 28px;text-align: center"
+                        @tap="selectCarText({{item}})">
+                    {{item}}
+                  </view>
+                </repeat>
+              </scroll-view>
+            </view>
+          </view>
+
           <view style="flex: 1">排数:</view>
-          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 1"></input>
+          <view
+            @tap="selectRow()"
+            style="border-bottom: #666666 solid 1px;flex: 1;position: relative;text-align: center">
+            {{selectRowText}}
+            <view hidden="{{isSelectRow}}"
+                  style="width: 100%;position: absolute;bottom:-95px;background-color: white;z-index: 22;height: 90px ">
+              <scroll-view scroll-y="true">
+                <repeat for="{{rows}}" key="index">
+                  <view style="height: 28px;text-align: center"
+                        @tap="selectRowText({{item}})">
+                    {{item}}
+                  </view>
+                </repeat>
+              </scroll-view>
+            </view>
+          </view>
+
           <view style="flex: 1">座号:</view>
-          <input v-model="input" style="border-bottom: #333333 solid 1px;flex: 1"></input>
+          <view
+            @tap="selectSeat()"
+            style="border-bottom: #666666 solid 1px;flex: 1;position: relative;text-align: center">
+            {{selectSeatText}}
+            <view hidden="{{isSelectSeat}}"
+                  style="width: 100%;position: absolute;bottom:-95px;background-color: white;z-index: 22;height: 90px ">
+              <scroll-view scroll-y="true">
+                <repeat for="{{seats}}" key="index">
+                  <view style="height: 28px;text-align: center"
+                        @tap="selectSeatText({{item}})">
+                    {{item}}
+                  </view>
+                </repeat>
+              </scroll-view>
+            </view>
+          </view>
         </view>
 
         <view
           style="line-height:35px;height: 35px;color: white;background-color: #f82c19;margin-left: 20px;margin-right:20px;margin-top:20px;text-align: center;font-size: 15px;border-radius: 5px;"
           @tap="hide()">我知道了
         </view>
-        <view style="margin:5px;float: right;font-size: 10px;color: #999999;">温馨提示: 仅支持G D C开头的列车</view>
+        <view style="margin:10px;float: right;font-size: 10px;color: #999999;">温馨提示: 仅支持G D C开头的列车</view>
 
       </view>
     </view>
@@ -311,6 +374,10 @@
     };
     components = {};
     data = {
+      isSelectTrain: true,
+      isSelectCar: true,
+      isSelectRow: true,
+      isSelectSeat: true,
       swiperCurrent: 0,
       imgUrls: [
         'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
@@ -321,9 +388,58 @@
       showMeals: [{ name: '猪排', price: 25.00 }, { name: '鸡排', price: 15.00 }, { name: '牛排', price: 35.00 }, {
         name: '鸡腿',
         price: 5.00
-      }]
+      }],
+      trainTypes: ['G', 'D', 'C'
+      ],
+      cars: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16'
+      ],
+      rows: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '19', '20', '21', '22', '23', '24'
+      ],
+      seats: ['A', 'B', 'C', 'D', 'E', 'F'
+      ],
+      selectCarText: '',
+      selectRowText: '',
+      selectSeatText: '',
+      selectTrainText: ''
+
     };
     methods = {
+      selectTrain() {
+        this.isSelectTrain = !this.isSelectTrain;
+        this.isSelectCar = true;
+        this.isSelectRow = true;
+        this.isSelectSeat = true;
+      },
+      selectCarNum() {
+        this.isSelectCar = !this.isSelectCar;
+        this.isSelectTrain = true;
+        this.isSelectRow = true;
+        this.isSelectSeat = true;
+      },
+      selectRow() {
+        this.isSelectRow = !this.isSelectRow;
+        this.isSelectCar = true;
+        this.isSelectTrain = true;
+        this.isSelectSeat = true;
+      },
+      selectSeat() {
+        this.isSelectSeat = !this.isSelectSeat;
+        this.isSelectCar = true;
+        this.isSelectRow = true;
+        this.isSelectTrain = true;
+      },
+      selectTrainText(text) {
+        this.selectTrainText = text;
+      },
+      selectCarText(text) {
+        this.selectCarText = text;
+      },
+      selectRowText(text) {
+        this.selectRowText = text;
+      },
+      selectSeatText(text) {
+        this.selectSeatText = text;
+      },
       orderList() {
         console.log('订单列表');
       },
