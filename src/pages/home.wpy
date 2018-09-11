@@ -202,7 +202,7 @@
     </view>
     <view class="order"> 绑定车票，旅途下单享美食
       <image class="order-icon" @tap="orderClick()"></image>
-      <view class="order-car"> 当前车次：K1453
+      <view class="order-car"> 当前车次：{{train}}
       </view>
     </view>
   </view>
@@ -297,7 +297,8 @@
               </repeat>
             </view>
           </view>
-          <input v-model="input" style="margin-left:10px;border-bottom: #666666 solid 1px;flex: 3"></input>
+          <input v-model="input" style="margin-left:10px;border-bottom: #666666 solid 1px;flex: 3"
+                 @input="trainInput"></input>
         </view>
         <view style=" display: flex;flex-direction: row;margin: 5px">
           <view style="flex: 1">车厢:</view>
@@ -357,7 +358,7 @@
 
         <view
           style="line-height:35px;height: 35px;color: white;background-color: #f82c19;margin-left: 20px;margin-right:20px;margin-top:20px;text-align: center;font-size: 15px;border-radius: 5px;"
-          @tap="hide()">我知道了
+          @tap="dialogConfirm()">开始点餐
         </view>
         <view style="margin:10px;float: right;font-size: 10px;color: #999999;">温馨提示: 仅支持G D C开头的列车</view>
 
@@ -400,8 +401,9 @@
       selectCarText: '',
       selectRowText: '',
       selectSeatText: '',
-      selectTrainText: ''
-
+      selectTrainText: '',
+      trainNum: '',
+      train: ''
     };
     methods = {
       selectTrain() {
@@ -449,11 +451,24 @@
       itemClick(index) {
         console.log(index);
       },
+      trainInput: function(e) {
+        this.trainNum = e.detail.value;
+      },
       orderClick() {
         this.flag = false;
       },
-      hide() {
-        this.flag = true;
+      dialogConfirm() {
+
+        if (this.selectCarText == '' || this.selectRowText == '' || this.selectSeatText == '' || this.selectTrainText == '' || this.trainNum == '') {
+          wx.showToast({
+            title: '请选择车次座位信息',
+            icon: 'none',
+            duration: 1000
+          });
+        } else {
+          this.train = this.selectTrainText + this.trainNum;
+          this.flag = true;
+        }
       },
       sacnCode() {
         wx.scanCode({
